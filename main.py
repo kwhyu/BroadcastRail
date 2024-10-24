@@ -1,7 +1,7 @@
-import smtplib
 import os
 import schedule
 import time
+import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Mengambil konfigurasi dari variabel lingkungan
-smtp_server = os.getenv("SMTP_SERVER")
-smtp_port = int(os.getenv("SMTP_PORT", 587))
+smtp_server = "smtp.sendgrid.net"
+smtp_port = 587
 sender_email = os.getenv("SENDER_EMAIL")
-password = os.getenv("PASSWORD")
+sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
 receiver_email = os.getenv("RECIVER_EMAIL")  # Ganti dengan alamat email penerima
 
 def send_email():
@@ -22,14 +22,14 @@ def send_email():
     message["From"] = sender_email
     message["To"] = receiver_email
     message["Subject"] = "Contoh Broadcast Email"
-    body = "Ini adalah contoh pesan broadcast email yang dikirim secara otomatis."
+    body = "Ini adalah contoh pesan broadcast email yang dikirim secara otomatis dengan SendGrid."
     message.attach(MIMEText(body, "plain"))
 
-    # Mengirim email melalui server SMTP
+    # Mengirim email melalui server SMTP SendGrid
     try:
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
-        server.login(sender_email, password)
+        server.login("apikey", sendgrid_api_key)  # Login menggunakan "apikey" sebagai username
         server.sendmail(sender_email, receiver_email, message.as_string())
         server.close()
         print("Email berhasil dikirim!")
