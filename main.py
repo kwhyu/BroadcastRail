@@ -14,7 +14,7 @@ smtp_server = os.getenv("SMTP_SERVER")
 smtp_port = int(os.getenv("SMTP_PORT", 587))
 sender_email = os.getenv("SENDER_EMAIL")
 password = os.getenv("PASSWORD")
-receiver_email = os.getenv("RECIVER_ENMAIL")  # Ganti dengan alamat email penerima
+receiver_email = os.getenv("RECIVER_EMAIL")  # Ganti dengan alamat email penerima
 
 def send_email():
     # Membuat pesan
