@@ -1,38 +1,41 @@
 import os
 import schedule
 import time
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 from dotenv import load_dotenv
 
 # Memuat variabel lingkungan dari file .env (untuk pengembangan lokal)
 load_dotenv()
 
 # Mengambil konfigurasi dari variabel lingkungan
-smtp_server = "smtp.sendgrid.net"
-smtp_port = 587
+mailgun_api_key = os.getenv("MAILGUN_API_KEY")
+mailgun_domain = os.getenv("MAILGUN_DOMAIN")
 sender_email = os.getenv("SENDER_EMAIL")
-sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
-receiver_email = os.getenv("RECIVER_EMAIL")  # Ganti dengan alamat email penerima
+receiver_email =  os.getenv("RECIEVER_EMAIL") # Ganti dengan alamat email penerima
 
 def send_email():
-    # Membuat pesan
-    message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = "Contoh Broadcast Email"
-    body = "Ini adalah contoh pesan broadcast email yang dikirim secara otomatis dengan SendGrid."
-    message.attach(MIMEText(body, "plain"))
+    # Membuat data email
+    subject = "Contoh Broadcast Email"
+    body = "Ini adalah contoh pesan broadcast email yang dikirim secara otomatis dengan Mailgun."
+    data = {
+        "from": sender_email,
+        "to": receiver_email,
+        "subject": subject,
+        "text": body
+    }
 
-    # Mengirim email melalui server SMTP SendGrid
+    # Mengirim email melalui API Mailgun
     try:
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login("apikey", sendgrid_api_key)  # Login menggunakan "apikey" sebagai username
-        server.sendmail(sender_email, receiver_email, message.as_string())
-        server.close()
-        print("Email berhasil dikirim!")
+        response = requests.post(
+            f"https://api.mailgun.net/v3/{mailgun_domain}/messages",
+            auth=("api", mailgun_api_key),
+            data=data
+        )
+
+        if response.status_code == 200:
+            print("Email berhasil dikirim!")
+        else:
+            print(f"Terjadi kesalahan: {response.text}")
     except Exception as e:
         print(f"Terjadi kesalahan: {e}")
 
