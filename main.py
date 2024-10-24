@@ -3,6 +3,9 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Mengambil email dan password dari variabel lingkungan
 sender_email = os.getenv("EMAIL")
 password = os.getenv("PASSWORD")
